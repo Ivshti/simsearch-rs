@@ -122,10 +122,12 @@ where
         tokens.dedup();
 
         for token in tokens.clone() {
-            self.reverse_map
+            let entry = self.reverse_map
                 .entry(token)
-                .or_insert_with(|| Vec::with_capacity(1))
-                .push(id_num);
+                .or_insert_with(|| Vec::with_capacity(1));
+            if !entry.contains(&id_num) {
+                entry.push(id_num);
+            }
         }
 
         self.forward_map.insert(id_num, tokens);
@@ -216,7 +218,6 @@ where
 
         let mut result_scores: Vec<(usize, f64)> = result_scores.drain().collect();
         result_scores.sort_by(|lhs, rhs| rhs.1.partial_cmp(&lhs.1).unwrap());
-
         let result_ids: Vec<Id> = result_scores
             .iter()
             .map(|(id_num, _)| {
