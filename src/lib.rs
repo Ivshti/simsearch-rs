@@ -18,7 +18,6 @@
 //! ```
 
 use std::collections::HashMap;
-
 use strsim::{levenshtein, normalized_levenshtein};
 
 /// The simple search engine.
@@ -192,6 +191,7 @@ where
                     1. - ((distance.saturating_sub(len_diff)) as f64 / pattern_token.len() as f64);
 
                 if score > self.option.threshold {
+                    /*
                     let prefix_len = token.len() / 2;
                     let prefix_token =
                         String::from_utf8_lossy(token.as_bytes().split_at(prefix_len).0);
@@ -199,6 +199,8 @@ where
                         + normalized_levenshtein(&prefix_token, &pattern_token) as f64
                             / prefix_len as f64)
                         / 2.;
+                    */
+                    let score = normalized_levenshtein(&token, &pattern_token) as f64;
                     let score_current = token_scores
                         .get(&token.as_str())
                         .map(|score| *score)
