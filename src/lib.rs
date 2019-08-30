@@ -22,6 +22,7 @@ use std::collections::HashMap;
 use strsim::{levenshtein, normalized_levenshtein};
 
 /// The simple search engine.
+#[derive(Default)]
 pub struct SimSearch<Id>
 where
     Id: PartialEq + Clone,
@@ -201,7 +202,7 @@ where
                         / 2.;
                     let score_current = token_scores
                         .get(&token.as_str())
-                        .map(|score| *score)
+                        .copied()
                         .unwrap_or(0.);
                     token_scores.insert(token, score_current.max(score));
                 }
@@ -223,7 +224,7 @@ where
             .map(|(id_num, _)| {
                 self.ids[*id_num]
                     .as_ref()
-                    .map(|id| id.clone())
+                    .cloned()
                     // this can go wrong only if something (e.g. delete) leaves us in an
                     // inconsistent state
                     .expect("id at id_num should be there")
@@ -295,6 +296,7 @@ where
 /// let mut engine: SimSearch<usize> = SimSearch::new_with(
 ///     SearchOptions::new().case_sensitive(true));
 /// ```
+#[derive(Default)]
 pub struct SearchOptions {
     case_sensitive: bool,
     stop_whitespace: bool,
